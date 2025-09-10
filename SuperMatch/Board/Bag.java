@@ -5,7 +5,8 @@ import SuperMatch.Tools.*;
 
 public class Bag
 {
-   Vector<TileType> list;
+   private Vector<TileType> list;
+   private static final int SETS_PER_WILD = 5;
    
    public Bag()
    {
@@ -25,7 +26,7 @@ public class Bag
    public void refresh()
    {
       list.clear();
-      for(int i = 0; i < 4; i++) 
+      for(int i = 0; i < SETS_PER_WILD; i++) 
          for(TileType tt : TileType.getNonWild())
             list.add(tt);
       list.add(TileType.WILD);
