@@ -20,7 +20,7 @@ public enum TileType
       color = c;
    }
    
-   public TileType[] getNonWild()
+   public static TileType[] getNonWild()
    {
       int len = TileType.values().length - 1;
       TileType[] array = new TileType[len];
