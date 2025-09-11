@@ -26,10 +26,6 @@ public class GameBoard extends JPanel
          tileArr[x][y] = bag.draw();
       
       setVisible(true);
-      
-      System.out.println(getMatches().size() + " matches:");
-      for(MatchObj obj : getMatches())
-         System.out.println(obj.toString());
    }
    
    public Vector<MatchObj> getMatches()
