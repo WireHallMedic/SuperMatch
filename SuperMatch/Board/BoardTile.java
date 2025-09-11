@@ -1,5 +1,7 @@
 package SuperMatch.Board;
 
+import java.awt.*;
+
 public class BoardTile
 {
 	private TileType type;
@@ -23,4 +25,7 @@ public class BoardTile
    {
       vOffset += delta;
    }
+   
+   public Color getColor(){return type.color;}
+   public boolean matches(BoardTile that){return type.matches(that.type);}
 }

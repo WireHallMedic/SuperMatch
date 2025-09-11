@@ -6,7 +6,7 @@ import SuperMatch.Tools.*;
 public class Bag
 {
    private Vector<TileType> list;
-   private static final int SETS_PER_WILD = 5;
+   private static final int SETS_PER_WILD = 10;
    
    public Bag()
    {
@@ -14,13 +14,13 @@ public class Bag
       refresh();
    }
    
-   public TileType draw()
+   public BoardTile draw()
    {
       TileType tt = list.elementAt(list.size() - 1);
       list.removeElementAt(list.size() - 1);
       if(list.size() == 0)
          refresh();
-      return tt;
+      return new BoardTile(tt);
    }
    
    public void refresh()
