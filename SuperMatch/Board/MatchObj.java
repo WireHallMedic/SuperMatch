@@ -10,11 +10,22 @@ public class MatchObj
    
    public MatchObj()
    {
-      xLoc = 0;
-      yLoc = 0;
+      this(0, 0, true);
+   }
+   
+   public MatchObj(int x, int y, boolean horiz)
+   {
+      xLoc = x;
+      yLoc = y;
       type = null;
-      horizontal = true;
-      length = 3;
+      horizontal = horiz;
+      length = 2;
+   }
+   
+   // true if prospect continues match string
+   public boolean matches(BoardTile a)
+   {
+      return type.matches(a.getType());
    }
    
    // set type from two tiles
@@ -35,11 +46,16 @@ public class MatchObj
          type = a.getType();
    }
    
+   public void incrementLength()
+   {
+      length++;
+   }
+   
    public String toString()
    {
       String dir = "Horiz";
       if(!horizontal)
          dir = "Vert";
-      return String.format("%s match at %d, %d of %d %s", dir, length, xLoc, yLoc, type.name);
+      return String.format("%s match at [%d, %d] of %d %s", dir, xLoc, yLoc, length, type.name);
    }
 }

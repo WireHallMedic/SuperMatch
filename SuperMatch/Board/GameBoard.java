@@ -26,17 +26,113 @@ public class GameBoard extends JPanel
          tileArr[x][y] = bag.draw();
       
       setVisible(true);
+      
+      System.out.println(getMatches().size() + " matches:");
+      for(MatchObj obj : getMatches())
+         System.out.println(obj.toString());
    }
    
    public Vector<MatchObj> getMatches()
    {
       Vector<MatchObj> matchList = new Vector<MatchObj>();
+      MatchObj curMatch = null; // also serves as flag for being in match
       // horizontal matches
       for(int y = 0; y < TILES_TALL; y++)
       {
-      
+         for(int x = 0; x < TILES_WIDE - 1; x++)
+         {
+            BoardTile a = tileArr[x][y];
+            BoardTile b = tileArr[x + 1][y];
+            
+            // already in a match
+            if(curMatch != null)
+            {
+               // match continues
+               if(curMatch.matches(b))
+               {
+                  curMatch.incrementLength();
+                  curMatch.updateType(b);
+               }
+               else
+               // match ends
+               {
+                  if(curMatch.length > 2)
+                     matchList.add(curMatch);
+                  curMatch = null;
+                  // wild tiles can be part of multiple matches
+                  if(a.getType() == TileType.WILD)
+                     x--;
+               }
+            }
+            // not in a match
+            else
+            {
+               // match starts
+               if(a.matches(b))
+               {
+                  curMatch = new MatchObj(x, y, true);
+                  curMatch.setType(a, b);
+               }
+               // nothing required for continuing non-match
+            }
+         }
+         // end of row
+         if(curMatch != null)
+         {
+            if(curMatch.length > 2)
+               matchList.add(curMatch);
+            curMatch = null;
+         }
       }
-      
+      // vertical matches
+      for(int x = 0; x < TILES_WIDE; x++)
+      {
+         for(int y = 0; y < TILES_TALL - 1; y++)
+         {
+            BoardTile a = tileArr[x][y];
+            BoardTile b = tileArr[x][y + 1];
+            
+            // already in a match
+            if(curMatch != null)
+            {
+               // match continues
+               if(curMatch.matches(b))
+               {
+                  curMatch.incrementLength();
+                  curMatch.updateType(b);
+               }
+               else
+               // match ends
+               {
+                  if(curMatch.length > 2)
+                     matchList.add(curMatch);
+                  curMatch = null;
+                  // wild tiles can be part of multiple matches
+                  if(a.getType() == TileType.WILD)
+                     y--;
+               }
+            }
+            // not in a match
+            else
+            {
+               // match starts
+               if(a.matches(b))
+               {
+                  curMatch = new MatchObj(x, y, false);
+                  curMatch.setType(a, b);
+               }
+               // nothing required for continuing non-match
+            }
+         }
+         // end of column
+         if(curMatch != null)
+         {
+            if(curMatch.length > 2)
+               matchList.add(curMatch);
+            curMatch = null;
+         }
+      }
+      return matchList;
    }
    
    @Override
