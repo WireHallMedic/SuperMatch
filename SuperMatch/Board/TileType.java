@@ -4,19 +4,21 @@ import java.awt.*;
 
 public enum TileType
 {
-   STRENGTH    (Color.RED),
-   AGILITY     (Color.YELLOW),
-   WILL        (new Color(157, 0, 255)),
-   INTELLECT   (Color.BLUE),
-   ATTACK      (Color.ORANGE),
-   COLLATERAL  (Color.GRAY),
-   BANTER      (Color.WHITE),
-   WILD        (Color.BLACK);
+   STRENGTH    ("Strength", Color.RED),
+   AGILITY     ("Agility", Color.YELLOW),
+   WILL        ("Will", new Color(157, 0, 255)),
+   INTELLECT   ("Intellect", Color.BLUE),
+   ATTACK      ("Attack", Color.ORANGE),
+   COLLATERAL  ("Collateral", Color.GRAY),
+   BANTER      ("Banter", Color.WHITE),
+   WILD        ("Wild", Color.BLACK);
    
    public Color color;
+   public String name;
    
-   private TileType(Color c)
+   private TileType(String n, Color c)
    {
+      name = n;
       color = c;
    }
    

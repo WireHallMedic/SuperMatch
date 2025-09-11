@@ -2,6 +2,7 @@ package SuperMatch.Board;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.*;
 
 public class GameBoard extends JPanel
 {
@@ -25,6 +26,17 @@ public class GameBoard extends JPanel
          tileArr[x][y] = bag.draw();
       
       setVisible(true);
+   }
+   
+   public Vector<MatchObj> getMatches()
+   {
+      Vector<MatchObj> matchList = new Vector<MatchObj>();
+      // horizontal matches
+      for(int y = 0; y < TILES_TALL; y++)
+      {
+      
+      }
+      
    }
    
    @Override
