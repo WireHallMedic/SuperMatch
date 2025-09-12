@@ -18,6 +18,7 @@ public class GameBoard extends JPanel implements ActionListener, MouseListener, 
    private BoardTile[][] tileArr;
    private Bag bag;
    private int[] mouseLoc = {-1, -1};
+   private int[] mouseDownLoc = {-1, -1};
    private int[] markedTile = {-1, -1};
    private Vector<Particle> particleList;
    
@@ -376,7 +377,6 @@ public class GameBoard extends JPanel implements ActionListener, MouseListener, 
    }
    
    public void mouseClicked(MouseEvent me){}
-   public void mousePressed(MouseEvent me){}
    public void mouseEntered(MouseEvent me){}
    public void mouseExited(MouseEvent me){mouseLoc[0] = -1; mouseLoc[1] = -1;}
    public void mouseDragged(MouseEvent me){mouseMoved(me);}
@@ -392,11 +392,30 @@ public class GameBoard extends JPanel implements ActionListener, MouseListener, 
       }
    }
    
+   
+   public void mousePressed(MouseEvent me)
+   {
+      mouseDownLoc = getTilePosition(me.getX(), me.getY());
+   }
+   
    public void mouseReleased(MouseEvent me)
    {
       int[] newTile = getTilePosition(me.getX(), me.getY());
+      if(newTile[0] < 0 || newTile[0] >= TILES_WIDE ||
+         newTile[1] < 0 || newTile[1] >= TILES_TALL)
+      {
+         newTile[0] = -1;
+         newTile[1] = -1;
+      }
+      
+      // mouse up adjacent to mouse down
+      if(isAdjacent(mouseDownLoc, newTile))
+      {
+         doSwap(mouseDownLoc, newTile);
+         unmarkTile();
+      }
       // clicked marked tile
-      if(newTile[0] == markedTile[0] && newTile[1] == markedTile[1])
+      else if(matchingTiles(newTile, markedTile))
          unmarkTile();
       // clicked adjacent tile while tile is marked
       else if(markedTile[0] != -1 && isAdjacent(markedTile, newTile))
@@ -407,13 +426,6 @@ public class GameBoard extends JPanel implements ActionListener, MouseListener, 
       // clicked non-adjacent tile
       else
          markedTile = newTile;
-      
-      if(markedTile[0] < 0 || markedTile[0] >= TILES_WIDE ||
-         markedTile[1] < 0 || markedTile[1] >= TILES_TALL)
-      {
-         markedTile[0] = -1;
-         markedTile[1] = -1;
-      }
    }
    
    public void unmarkTile()
@@ -426,5 +438,10 @@ public class GameBoard extends JPanel implements ActionListener, MouseListener, 
    {
       int diff = Math.abs(a[0] - b[0]) + Math.abs(a[1] - b[1]);
       return diff == 1;
+   }
+   
+   public boolean matchingTiles(int[] a, int[] b)
+   {
+      return a[0] == b[0] && a[1] == b[1];
    }
 }
