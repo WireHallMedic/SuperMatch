@@ -3,13 +3,16 @@ package SuperMatch.Board;
 import javax.swing.*;
 import java.awt.*;
 import java.util.*;
+import java.awt.image.*;
+import SuperMatch.GUI.*;
 
 public class GameBoard extends JPanel
 {
    public static final int TILES_WIDE = 8;
    public static final int TILES_TALL = 12;
-   private static BufferedImage[] tileImageArr;
+   public static final int TILE_SIZE = 32;
    
+   private static BufferedImage[] tileImageArr;
    private BoardTile[][] tileArr;
    private Bag bag;
    
@@ -154,6 +157,7 @@ public class GameBoard extends JPanel
    
    private void loadTileImages()
    {
-   
+      tileImageArr = new BufferedImage[TileType.values().length];
+      BufferedImage imageStrip = FileManager.loadImageFile("/SuperMatch/Resources/Tiles.png");
    }
 }

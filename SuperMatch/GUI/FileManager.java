@@ -26,7 +26,7 @@ public class FileManager
    }
    
    // load image from file
-   public static BufferedImage loadImageFile(String fileName, int w, int t)
+   public static BufferedImage loadImageFile(String fileName)
    {
       // load the image
       BufferedImage image = null;

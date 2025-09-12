@@ -14,9 +14,6 @@ public class SMMain extends JFrame
       setDefaultCloseOperation(EXIT_ON_CLOSE);
       setLayout(new GridLayout(1, 1));
       
-      long time = System.currentTimeMillis();
-      System.out.println("Seed: " + time);
-      RNG.setSeed(time);
       GameBoard board = new GameBoard(null);
       add(board);
       
