@@ -19,6 +19,7 @@ public class GameBoard extends JPanel implements ActionListener, MouseListener, 
    private Bag bag;
    private int[] mouseLoc = {-1, -1};
    private int[] markedTile = {-1, -1};
+   private Vector<Particle> particleList;
    
    public GameBoard(Bag b)
    {
@@ -26,6 +27,7 @@ public class GameBoard extends JPanel implements ActionListener, MouseListener, 
       
       tileImageArr = FileManager.loadTileImages();
       tileArr = new BoardTile[TILES_WIDE][TILES_TALL];
+      particleList = new Vector<Particle>();
       
       bag = b;
       initializeBoardState(bag == null);
@@ -76,6 +78,12 @@ public class GameBoard extends JPanel implements ActionListener, MouseListener, 
       doSwap(a[0], a[1], b[0], b[1]);
    }
    
+   public void addParticles(Particle[] newParticles)
+   {
+      for(Particle p : newParticles)
+         particleList.add(p);
+   }
+   
    public boolean hasMatches()
    {
       return getMatches().size() > 0;
@@ -94,6 +102,8 @@ public class GameBoard extends JPanel implements ActionListener, MouseListener, 
                x += i;
             else
                y += i;
+            if(doAnimation && tileArr[x][y] != null)
+               addParticles(tileArr[x][y].getParticles(x, y));
             tileArr[x][y] = null;
          }
       }
@@ -288,6 +298,13 @@ public class GameBoard extends JPanel implements ActionListener, MouseListener, 
          smallG2d.drawRect(markedTile[0] * TILE_SIZE, markedTile[1] * TILE_SIZE, TILE_SIZE - 1, TILE_SIZE - 1);
       }
       
+      // particles
+      for(Particle p : particleList)
+      {
+         smallG2d.setColor(p.color);
+         smallG2d.fillRect((int)(TILE_SIZE * p.xLoc), (int)(TILE_SIZE * p.yLoc), 4, 4);
+      }
+      
       if(SMMain.DEBUG_MODE)
       {
          // no tiles falling falling
@@ -345,6 +362,15 @@ public class GameBoard extends JPanel implements ActionListener, MouseListener, 
          for(int y = 0; y < TILES_TALL; y++)
             if(tileArr[x][y] != null)
                tileArr[x][y].applyGravity();
+      }
+      for(int i = 0; i < particleList.size(); i++)
+      {
+         particleList.elementAt(i).increment();
+         if(particleList.elementAt(i).isDead())
+         {
+            particleList.removeElementAt(i);
+            i--;
+         }
       }
       repaint();
    }

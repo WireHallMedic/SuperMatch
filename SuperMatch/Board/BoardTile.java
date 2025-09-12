@@ -1,6 +1,7 @@
 package SuperMatch.Board;
 
 import java.awt.*;
+import SuperMatch.GUI.*;
 
 public class BoardTile
 {
@@ -49,4 +50,20 @@ public class BoardTile
    public Color getColor(){return type.color;}
    public int imageIndex(){return type.ordinal();}
    public boolean matches(BoardTile that){return type.matches(that.type);}
+   
+   public Particle[] getParticles(int x, int y)
+   {
+      Particle[] list = new Particle[7];
+      if(type == TileType.WILD)
+      {
+         for(int i = 0; i < list.length; i++)
+            list[i] = new Particle(TileType.values()[i].color, x, y);
+      }
+      else
+      {
+         for(int i = 0; i < list.length; i++)
+            list[i] = new Particle(type.color, x, y);
+      }
+      return list;
+   }
 }
