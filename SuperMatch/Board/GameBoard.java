@@ -32,6 +32,8 @@ public class GameBoard extends JPanel implements ActionListener, MouseListener, 
       addMouseListener(this);
       addMouseMotionListener(this);
       
+      setBackground(Color.BLACK);
+      
       setVisible(true);
       
       
