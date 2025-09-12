@@ -57,36 +57,52 @@ public class GameBoard extends JPanel implements ActionListener
             tileArr[x][y] = null;
          }
       }
+      doGravity();
+      fillGaps();
    }
    
    // bubble sort out nulls for readability; KISS
    public void doGravity()
    {
-      boolean hasFallingTiles = true;
-      while(hasFallingTiles)
+      for(int x = 0; x < TILES_WIDE; x++)
       {
-         hasFallingTiles = false;
-         for(int x = 0; x < TILES_WIDE; x++)
-         for(int y = TILES_TALL - 1; y >= 1; y--)
+         boolean tilesInAir = true;
+         while(tilesInAir)
          {
-            if(tileArr[x][y] == null && tileArr[x][y - 1] != null)
+            tilesInAir = false;
+            for(int y = TILES_TALL - 1; y >= 1; y--)
             {
-               tileArr[x][y] = tileArr[x][y - 1];
-               tileArr[x][y - 1] = null;
-               hasFallingTiles = true;
+               if(tileArr[x][y] == null && tileArr[x][y - 1] != null)
+               {
+                  tileArr[x][y] = tileArr[x][y - 1];
+                  tileArr[x][y].adjustVOffset(-1.0);
+                  tileArr[x][y - 1] = null;
+                  tilesInAir = true;
+               }
             }
          }
       }
+      if(!holesAtTop())
+         System.out.println("Holes not at top");
    }
    
    public void fillGaps()
    {
       for(int x = 0; x < TILES_WIDE; x++)
-      for(int y = 0; y < TILES_TALL; y++)
       {
-         if(tileArr[x][y] == null)
+         int gaps = 0;
+         for(int y = TILES_TALL - 1; y >= 0; y--)
+            if(tileArr[x][y] == null)
+               gaps++;
+               
+         double startingHeight = -gaps;
+         for(int y = TILES_TALL - 1; y >= 0; y--)
          {
-            tileArr[x][y] = bag.draw();
+            if(tileArr[x][y] == null)
+            {
+               tileArr[x][y] = bag.draw();
+               tileArr[x][y].setVOffset(startingHeight);
+            }
          }
       }
    }
@@ -212,9 +228,24 @@ public class GameBoard extends JPanel implements ActionListener
       {
          if(tileArr[x][y] != null)
          {
-            smallG2d.drawImage(tileImageArr[tileArr[x][y].imageIndex()], x * TILE_SIZE, y * TILE_SIZE, null);
+            int yPos = (int)((y + tileArr[x][y].getVOffset()) * TILE_SIZE);
+            smallG2d.drawImage(tileImageArr[tileArr[x][y].imageIndex()], x * TILE_SIZE, yPos, null);
          }
       }
+      // no tiles falling falling
+      if(hasFallingTiles())
+         smallG2d.setColor(Color.RED);
+      else
+         smallG2d.setColor(Color.GREEN);
+      smallG2d.fillRect(0, 0, 5, 5);
+      
+      // nmatches exist
+      if(!hasMatches())
+         smallG2d.setColor(Color.RED);
+      else
+         smallG2d.setColor(Color.GREEN);
+      smallG2d.fillRect(15, 0, 5, 5);
+      
       g2d.drawImage(smallImage.getScaledInstance(this.getWidth(), this.getHeight(), Image.SCALE_SMOOTH), 0, 0 , null);
       smallG2d.dispose();
    }
@@ -225,9 +256,45 @@ public class GameBoard extends JPanel implements ActionListener
       BufferedImage imageStrip = FileManager.loadImageFile("/SuperMatch/Resources/Tiles.png");
    }
    
+   public boolean hasFallingTiles()
+   {
+      for(int x = 0; x < TILES_WIDE; x++)
+      for(int y = 0; y < TILES_TALL; y++)
+      {
+         if(tileArr[x][y] == null)
+            return true;
+         if(tileArr[x][y].isFalling())
+            return true;
+      }
+      return false;
+   }
+   
    // kicked by timer
    public void actionPerformed(ActionEvent ae)
    {
+      if(hasFallingTiles())
+      {
+         for(int x = 0; x < TILES_WIDE; x++)
+         for(int y = 0; y < TILES_TALL; y++)
+            if(tileArr[x][y] != null)
+               tileArr[x][y].applyGravity();
+      }
+      repaint();
+   }
    
+   private boolean holesAtTop()
+   {
+      for(int x = 0; x < TILES_WIDE; x++)
+      {
+         boolean encounteredNonNull = false;
+         for(int y = 0; y < TILES_TALL; y++)
+         {
+            if(tileArr[x][y] == null && encounteredNonNull)
+               return false;
+            if(tileArr[x][y] != null)
+               encounteredNonNull = true;
+         }
+      }
+      return true;
    }
 }

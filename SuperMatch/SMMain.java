@@ -9,6 +9,7 @@ import SuperMatch.Tools.*;
 public class SMMain extends JFrame implements KeyListener
 {
    private GameBoard board;
+   private javax.swing.Timer timer;
    
    public SMMain()
    {
@@ -21,6 +22,10 @@ public class SMMain extends JFrame implements KeyListener
       board = new GameBoard(null);
       add(board);
       addKeyListener(this);
+      
+      timer = new javax.swing.Timer(1000 / 30, null);
+      timer.addActionListener(board);
+      timer.start();
       
       setVisible(true);
    }
@@ -41,6 +46,5 @@ public class SMMain extends JFrame implements KeyListener
    public static void main(String[] args)
    {
       SMMain main = new SMMain();
-      //main.repaint();
    }
 }

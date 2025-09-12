@@ -33,12 +33,15 @@ public class BoardTile
    
    public void applyGravity()
    {
-      fallSpeed = Math.min(fallSpeed + GRAVITY, TERMINAL_VELOCITY);
-      vOffset += fallSpeed;
-      if(vOffset >= 0.0)
+      if(isFalling())
       {
-         fallSpeed = 0.0;
-         fallSpeed = 0.0;
+         fallSpeed = Math.min(fallSpeed + GRAVITY, TERMINAL_VELOCITY);
+         vOffset += fallSpeed;
+         if(vOffset >= 0.0)
+         {
+            vOffset = 0.0;
+            fallSpeed = 0.0;
+         }
       }
    }
    
