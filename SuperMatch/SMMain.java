@@ -8,6 +8,8 @@ import SuperMatch.Tools.*;
 
 public class SMMain extends JFrame implements KeyListener
 {
+   public static final boolean DEBUG_MODE = true;
+   
    private GameBoard board;
    private javax.swing.Timer timer;
    
@@ -37,8 +39,7 @@ public class SMMain extends JFrame implements KeyListener
       switch(ke.getKeyCode())
       {
          case KeyEvent.VK_R : board.removeMatches(); break;
-         case KeyEvent.VK_D : board.doGravity(); break;
-         case KeyEvent.VK_F : board.fillGaps(); break;
+         case KeyEvent.VK_F : board.removeMatches(false); break;
       }
       repaint();
    }
