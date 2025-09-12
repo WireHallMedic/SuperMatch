@@ -19,7 +19,7 @@ s#l0
 %\011SuperMatch%sBoard%sGameBoard.java
 %\011SuperMatch%sBoard%sMatchObj.java
 %\011SuperMatch%sBoard%sTileType.java
-%\011SuperMatch%sGUI%sImageLoader.java
+%\011SuperMatch%sGUI%sFileManager.java
 %\011SuperMatch%sResources%sTiles.png
 %\011SuperMatch%sSMMain.java
 %\011SuperMatch%sTools%sRNG.java
@@ -29,7 +29,7 @@ s#l0
 %\011SuperMatch%sBoard%sGameBoard.java
 %\011SuperMatch%sBoard%sMatchObj.java
 %\011SuperMatch%sBoard%sTileType.java
-%\011SuperMatch%sGUI%sImageLoader.java
+%\011SuperMatch%sGUI%sFileManager.java
 %\011SuperMatch%sResources%sTiles.png
 %\011SuperMatch%sSMMain.java
 %\011SuperMatch%sTools%sRNG.java

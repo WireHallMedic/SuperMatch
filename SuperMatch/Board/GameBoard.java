@@ -8,6 +8,7 @@ public class GameBoard extends JPanel
 {
    public static final int TILES_WIDE = 8;
    public static final int TILES_TALL = 12;
+   private static BufferedImage[] tileImageArr;
    
    private BoardTile[][] tileArr;
    private Bag bag;
@@ -15,6 +16,7 @@ public class GameBoard extends JPanel
    public GameBoard(Bag b)
    {
       super();
+      loadTileImages();
       if(b == null)
          bag = new Bag();
       else
@@ -148,5 +150,10 @@ public class GameBoard extends JPanel
             g2d.fillRect(x * tileWidth, y * tileHeight, tileWidth, tileHeight);
          }
       }
+   }
+   
+   private void loadTileImages()
+   {
+   
    }
 }
