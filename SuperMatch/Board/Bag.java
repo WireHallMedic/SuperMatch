@@ -27,7 +27,7 @@ public class Bag
    {
       list.clear();
       for(int i = 0; i < SETS_PER_WILD; i++) 
-         for(TileType tt : TileType.getNonWild())
+         for(TileType tt : TileType.getBasicSet())
             list.add(tt);
       list.add(TileType.WILD);
       shake();
