@@ -2,11 +2,12 @@ package SuperMatch.Board;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.*;
 import java.util.*;
 import java.awt.image.*;
 import SuperMatch.GUI.*;
 
-public class GameBoard extends JPanel
+public class GameBoard extends JPanel implements ActionListener
 {
    public static final int TILES_WIDE = 8;
    public static final int TILES_TALL = 12;
@@ -33,6 +34,61 @@ public class GameBoard extends JPanel
          tileArr[x][y] = bag.draw();
       
       setVisible(true);
+   }
+   
+   public boolean hasMatches()
+   {
+      return getMatches().size() > 0;
+   }
+   
+   public void removeMatches()
+   {
+      Vector<MatchObj> matchList = getMatches();
+      for(MatchObj curMatch : matchList)
+      {
+         for(int i = 0; i < curMatch.length; i++)
+         {
+            int x = curMatch.xLoc;
+            int y = curMatch.yLoc;
+            if(curMatch.horizontal)
+               x += i;
+            else
+               y += i;
+            tileArr[x][y] = null;
+         }
+      }
+   }
+   
+   // bubble sort out nulls for readability; KISS
+   public void doGravity()
+   {
+      boolean hasFallingTiles = true;
+      while(hasFallingTiles)
+      {
+         hasFallingTiles = false;
+         for(int x = 0; x < TILES_WIDE; x++)
+         for(int y = TILES_TALL - 1; y >= 1; y--)
+         {
+            if(tileArr[x][y] == null && tileArr[x][y - 1] != null)
+            {
+               tileArr[x][y] = tileArr[x][y - 1];
+               tileArr[x][y - 1] = null;
+               hasFallingTiles = true;
+            }
+         }
+      }
+   }
+   
+   public void fillGaps()
+   {
+      for(int x = 0; x < TILES_WIDE; x++)
+      for(int y = 0; y < TILES_TALL; y++)
+      {
+         if(tileArr[x][y] == null)
+         {
+            tileArr[x][y] = bag.draw();
+         }
+      }
    }
    
    public Vector<MatchObj> getMatches()
@@ -138,6 +194,7 @@ public class GameBoard extends JPanel
       return matchList;
    }
    
+   
    @Override
    public void paint(Graphics g)
    {
@@ -149,15 +206,12 @@ public class GameBoard extends JPanel
       BufferedImage smallImage = new BufferedImage(TILES_WIDE * TILE_SIZE, TILES_TALL * TILE_SIZE, 
                                                    BufferedImage.TYPE_INT_ARGB);
       Graphics2D smallG2d = smallImage.createGraphics();
-      //g2d.drawImage(scaledImage, 0, 0 , null);
       
       for(int x = 0; x < TILES_WIDE; x++)
       for(int y = 0; y < TILES_TALL; y++)
       {
          if(tileArr[x][y] != null)
          {
-//             g2d.setColor(tileArr[x][y].getColor());
-//             g2d.fillRect(x * tileWidth, y * tileHeight, tileWidth, tileHeight);
             smallG2d.drawImage(tileImageArr[tileArr[x][y].imageIndex()], x * TILE_SIZE, y * TILE_SIZE, null);
          }
       }
@@ -169,5 +223,11 @@ public class GameBoard extends JPanel
    {
       tileImageArr = new BufferedImage[TileType.values().length];
       BufferedImage imageStrip = FileManager.loadImageFile("/SuperMatch/Resources/Tiles.png");
+   }
+   
+   // kicked by timer
+   public void actionPerformed(ActionEvent ae)
+   {
+   
    }
 }
