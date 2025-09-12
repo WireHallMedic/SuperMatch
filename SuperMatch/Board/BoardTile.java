@@ -27,5 +27,6 @@ public class BoardTile
    }
    
    public Color getColor(){return type.color;}
+   public int imageIndex(){return type.ordinal();}
    public boolean matches(BoardTile that){return type.matches(that.type);}
 }

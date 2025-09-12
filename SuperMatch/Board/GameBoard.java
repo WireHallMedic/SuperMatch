@@ -19,7 +19,9 @@ public class GameBoard extends JPanel
    public GameBoard(Bag b)
    {
       super();
-      loadTileImages();
+      
+      tileImageArr = FileManager.loadTileImages();
+      
       if(b == null)
          bag = new Bag();
       else
@@ -144,15 +146,23 @@ public class GameBoard extends JPanel
       int tileHeight = getHeight() / TILES_TALL;
       Graphics2D g2d = (Graphics2D)g;
       
+      BufferedImage smallImage = new BufferedImage(TILES_WIDE * TILE_SIZE, TILES_TALL * TILE_SIZE, 
+                                                   BufferedImage.TYPE_INT_ARGB);
+      Graphics2D smallG2d = smallImage.createGraphics();
+      //g2d.drawImage(scaledImage, 0, 0 , null);
+      
       for(int x = 0; x < TILES_WIDE; x++)
       for(int y = 0; y < TILES_TALL; y++)
       {
          if(tileArr[x][y] != null)
          {
-            g2d.setColor(tileArr[x][y].getColor());
-            g2d.fillRect(x * tileWidth, y * tileHeight, tileWidth, tileHeight);
+//             g2d.setColor(tileArr[x][y].getColor());
+//             g2d.fillRect(x * tileWidth, y * tileHeight, tileWidth, tileHeight);
+            smallG2d.drawImage(tileImageArr[tileArr[x][y].imageIndex()], x * TILE_SIZE, y * TILE_SIZE, null);
          }
       }
+      g2d.drawImage(smallImage.getScaledInstance(this.getWidth(), this.getHeight(), Image.SCALE_SMOOTH), 0, 0 , null);
+      smallG2d.dispose();
    }
    
    private void loadTileImages()
