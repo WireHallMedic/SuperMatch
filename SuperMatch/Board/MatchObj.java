@@ -8,6 +8,8 @@ public class MatchObj
    public boolean horizontal;
    public int length;
    
+   public int getValue(){return length - 2;}
+   
    public MatchObj()
    {
       this(0, 0, true);

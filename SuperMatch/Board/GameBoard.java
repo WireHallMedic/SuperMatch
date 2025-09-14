@@ -8,6 +8,7 @@ import java.util.*;
 import java.awt.image.*;
 import SuperMatch.*;
 import SuperMatch.GUI.*;
+import SuperMatch.Tools.*;
 import SuperMatch.Encounter.*;
 
 public class GameBoard extends JPanel implements ActionListener, MouseListener, MouseMotionListener, Runnable
@@ -28,8 +29,10 @@ public class GameBoard extends JPanel implements ActionListener, MouseListener, 
    private Vector<VisualEffect> visualEffectList;
    private EncounterState encounterState;
    private int turnState;
+   private int pendingCollateralDamage;
    
    public void setEncounterState(EncounterState es){encounterState = es;}
+   public void addCollateralDamage(int cd){pendingCollateralDamage += cd;}
    
    public EncounterState getEncounterState(){return encounterState;}
    
@@ -44,6 +47,7 @@ public class GameBoard extends JPanel implements ActionListener, MouseListener, 
       bag = b;
       initializeBoardState(bag == null, removeInitialMatches);
       encounterState = null;
+      pendingCollateralDamage = 0;
       turnState = WAITING_FOR_INPUT; // must be after initializing
       addMouseListener(this);
       addMouseMotionListener(this);
@@ -86,6 +90,12 @@ public class GameBoard extends JPanel implements ActionListener, MouseListener, 
                   if(encounterState != null)
                      encounterState.incrementCombo();
                   removeMatches();
+               }
+               else if(pendingCollateralDamage > 0)
+               {
+                  resolveCollateralDamage();
+                  doGravity(true);
+                  fillGaps(true);
                }
                else
                {
@@ -154,6 +164,25 @@ public class GameBoard extends JPanel implements ActionListener, MouseListener, 
       fillGaps(doAnimation);
    }
    public void removeMatches(){removeMatches(true);}
+   
+   public void resolveCollateralDamage()
+   {
+      for(int i = 0; i < pendingCollateralDamage; i++)
+      {
+         int x = RNG.nextInt(TILES_WIDE);
+         int y = RNG.nextInt(TILES_TALL);
+         while(tileArr[x][y] == null)
+         {
+            x = RNG.nextInt(TILES_WIDE);
+            y = RNG.nextInt(TILES_TALL);
+         }
+         addVisualEffects(tileArr[x][y].getParticles(x, y));
+         tileArr[x][y] = null;
+      }
+      FloatingString fStr = new FloatingString("Collateral Damaage!");
+      addVisualEffect(fStr);
+      pendingCollateralDamage = 0;
+   }
    
    // bubble sort out nulls for readability; KISS
    public void doGravity(boolean doAnimation)
@@ -366,13 +395,6 @@ public class GameBoard extends JPanel implements ActionListener, MouseListener, 
          else
             smallG2d.setColor(Color.GREEN);
          smallG2d.fillRect(0, 0, 5, 5);
-         
-         // nmatches exist
-         if(!hasMatches())
-            smallG2d.setColor(Color.RED);
-         else
-            smallG2d.setColor(Color.GREEN);
-         smallG2d.fillRect(15, 0, 5, 5);
       }
       
       // scale to actual size
@@ -394,11 +416,11 @@ public class GameBoard extends JPanel implements ActionListener, MouseListener, 
       
       // Translate the shape to the desired position
       g2d.translate(x, y); // draw(shape) doesn't take x, y args, need to translate
-      g2d.setStroke(new BasicStroke(2.0f)); // outline thickness
-      g2d.setColor(outline);
-      g2d.draw(textOutline);
+      //g2d.setStroke(new BasicStroke(2.0f)); // outline thickness
       g2d.setColor(fill);
       g2d.fill(textOutline);
+      g2d.setColor(outline);
+      g2d.draw(textOutline);
       
       g2d.translate(-x, -y); // translate back
       g2d.setFont(oldFont);

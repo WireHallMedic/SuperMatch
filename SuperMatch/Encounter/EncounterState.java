@@ -11,6 +11,8 @@ public class EncounterState
    private Vector<MatchObj> matchList;
    private GameBoard board;
    
+   private int collateralCount;
+   
    public int getRound(){return round;}
    public int getCombo(){return combo;}
    
@@ -38,7 +40,17 @@ public class EncounterState
    public void registerMatch(MatchObj mo)
    {
       matchList.add(mo);
-      System.out.println("  " + mo.toShortString() + " x" + combo);
+      System.out.println("  " + mo.type.name + " +" + (combo * mo.getValue()));
+      if(mo.type == TileType.COLLATERAL)
+      {
+         collateralCount += mo.getValue() * combo;
+         if(collateralCount >= 5)
+         {
+            if(board != null)
+               board.addCollateralDamage(collateralCount / 2);
+            collateralCount = 0;
+         }
+      }
    }
    
    public void incrementCombo()
