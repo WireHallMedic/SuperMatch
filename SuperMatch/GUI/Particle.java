@@ -19,7 +19,7 @@ public class Particle
       xLoc = x + .5;
       yLoc = y + .5;
       
-      // random angle and speed in range of [1.0, 1.5)
+      // random angle, and speed in range of [1.0, 1.5)
       double angle = RNG.nextDouble() * 2 * 3.14;
       double speed = (RNG.nextDouble() * .05) + 0.1;
       
