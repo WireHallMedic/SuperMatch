@@ -2,6 +2,7 @@ package SuperMatch.Board;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.font.*;
 import java.awt.event.*;
 import java.util.*;
 import java.awt.image.*;
@@ -357,6 +358,26 @@ public class GameBoard extends JPanel implements ActionListener, MouseListener, 
       
       g2d.drawImage(smallImage.getScaledInstance(this.getWidth(), this.getHeight(), Image.SCALE_SMOOTH), 0, 0 , null);
       smallG2d.dispose();
+   }
+   
+   private void drawTextWithOutline(String text, Color fill, Color outline, int xLoc, int yLoc, Graphics2D g2d)
+   {
+      Font font = g2d.getFont();
+      GlyphVector gv = font.createGlyphVector(g2d.getFontRenderContext(), text);
+      Shape textOutline = gv.getOutline();
+      // Get font metrics to help with positioning (optional, but useful for centering)
+      FontMetrics fm = g2d.getFontMetrics(font);
+      int x = (getWidth() - fm.stringWidth(text)) / 2; // Example: center horizontally
+      int y = (getHeight() - fm.getHeight()) / 2 + fm.getAscent(); // Example: center vertically
+      
+      // Translate the shape to the desired position
+      g2d.translate(x, y);
+      g2d.setStroke(new BasicStroke(2.0f)); // Set outline thickness
+      g2d.setColor(Color.RED); // Set outline color
+      g2d.draw(textOutline);
+      g2d.setColor(Color.BLUE); // Set fill color
+      g2d.fill(textOutline);
+      g2d.translate(-x, -y); // Translate back to original origin
    }
    
    private void loadTileImages()
