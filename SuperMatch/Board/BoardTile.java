@@ -6,7 +6,7 @@ import SuperMatch.GUI.*;
 public class BoardTile
 {
    public static final double GRAVITY = 0.01;
-   public static final double TERMINAL_VELOCITY = 0.1;
+   public static final double TERMINAL_VELOCITY = 0.15;
    
 	private TileType type;
 	private double vOffset;
