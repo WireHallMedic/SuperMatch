@@ -371,8 +371,9 @@ public class GameBoard extends JPanel implements ActionListener, MouseListener, 
       }
       
       // visual effects
-      for(VisualEffect ve : visualEffectList)
+      for(int i = 0; i < visualEffectList.size(); i++)
       {
+         VisualEffect ve = visualEffectList.elementAt(i);
          if(ve instanceof Particle)
          {
             Particle p = (Particle)ve;

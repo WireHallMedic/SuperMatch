@@ -44,7 +44,7 @@ public class EncounterState
       if(mo.type == TileType.COLLATERAL)
       {
          collateralCount += mo.getValue() * combo;
-         if(collateralCount >= 5)
+         if(collateralCount >= 6)
          {
             if(board != null)
                board.addCollateralDamage(collateralCount / 2);

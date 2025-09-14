@@ -43,8 +43,9 @@ public class SMMain extends JFrame implements KeyListener
    {
       switch(ke.getKeyCode())
       {
-         case KeyEvent.VK_R : board.removeMatches(); break;
-         case KeyEvent.VK_F : board.removeMatches(false); break;
+         case KeyEvent.VK_SPACE : board.addCollateralDamage(4); 
+            System.out.println("Collateral Damage invoked");
+            break;
       }
       repaint();
    }
