@@ -28,6 +28,7 @@ public class SMMain extends JFrame implements KeyListener
       
       EncounterState es = new EncounterState();
       board.setEncounterState(es);
+      es.setBoard(board);
       
       timer = new javax.swing.Timer(1000 / 30, null);
       timer.addActionListener(board);

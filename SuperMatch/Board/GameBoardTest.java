@@ -20,7 +20,7 @@ public class GameBoardTest {
    @Test public void verticalMatching() 
    {
       RNG.setSeed(1757609330155L);
-      GameBoard board = new GameBoard(null);
+      GameBoard board = new GameBoard(null, false);
       Vector<MatchObj> matchList = board.getMatches();
       Assert.assertTrue("Vertical match found", 
          hasMatch(3, 5, 3, TileType.STRENGTH, false, matchList));
@@ -30,7 +30,7 @@ public class GameBoardTest {
    @Test public void horizontalMatching() 
    {
       RNG.setSeed(1757609595308L);
-      GameBoard board = new GameBoard(null);
+      GameBoard board = new GameBoard(null, false);
       Vector<MatchObj> matchList = board.getMatches();
       Assert.assertTrue("Horizontal match found", 
          hasMatch(5, 6, 3, TileType.AGILITY, true, matchList));
@@ -40,7 +40,7 @@ public class GameBoardTest {
    @Test public void overlappingWildMatching() 
    {
       RNG.setSeed(1757608365544L);
-      GameBoard board = new GameBoard(null);
+      GameBoard board = new GameBoard(null, false);
       Vector<MatchObj> matchList = board.getMatches();
       Assert.assertTrue("Overlapping coaxial matches on a wild tile are found (first match)", 
          hasMatch(1, 2, 3, TileType.BANTER, false, matchList));

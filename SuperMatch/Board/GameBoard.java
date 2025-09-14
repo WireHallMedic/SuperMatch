@@ -25,7 +25,7 @@ public class GameBoard extends JPanel implements ActionListener, MouseListener, 
    private int[] mouseLoc = {-1, -1};
    private int[] mouseDownLoc = {-1, -1};
    private int[] markedTile = {-1, -1};
-   private Vector<Particle> particleList;
+   private Vector<VisualEffect> visualEffectList;
    private EncounterState encounterState;
    private int turnState;
    
@@ -33,16 +33,16 @@ public class GameBoard extends JPanel implements ActionListener, MouseListener, 
    
    public EncounterState getEncounterState(){return encounterState;}
    
-   public GameBoard(Bag b)
+   public GameBoard(Bag b, boolean removeInitialMatches)
    {
       super();
       
       tileImageArr = FileManager.loadTileImages();
       tileArr = new BoardTile[TILES_WIDE][TILES_TALL];
-      particleList = new Vector<Particle>();
+      visualEffectList = new Vector<VisualEffect>();
       
       bag = b;
-      initializeBoardState(bag == null);
+      initializeBoardState(bag == null, removeInitialMatches);
       encounterState = null;
       turnState = WAITING_FOR_INPUT; // must be after initializing
       addMouseListener(this);
@@ -56,7 +56,10 @@ public class GameBoard extends JPanel implements ActionListener, MouseListener, 
       thread.start();
    }
    
-   public void initializeBoardState(boolean newBag)
+   public GameBoard(Bag b){this(b, true);}
+   
+   
+   public void initializeBoardState(boolean newBag, boolean removeInitialMatches)
    {
       if(newBag)
          bag = new Bag();
@@ -65,8 +68,9 @@ public class GameBoard extends JPanel implements ActionListener, MouseListener, 
       for(int y = 0; y < TILES_TALL; y++)
          tileArr[x][y] = bag.draw();
       
-      while(hasMatches())
-         removeMatches(false);
+      if(removeInitialMatches)
+         while(hasMatches())
+            removeMatches(false);
    }
    
    public void run()
@@ -110,10 +114,15 @@ public class GameBoard extends JPanel implements ActionListener, MouseListener, 
       doSwap(a[0], a[1], b[0], b[1]);
    }
    
-   public void addParticles(Particle[] newParticles)
+   public void addVisualEffects(VisualEffect[] veArr)
    {
-      for(Particle p : newParticles)
-         particleList.add(p);
+      for(VisualEffect ve : veArr)
+         visualEffectList.add(ve);
+   }
+   
+   public void addVisualEffect(VisualEffect ve)
+   {
+      visualEffectList.add(ve);
    }
    
    public boolean hasMatches()
@@ -137,7 +146,7 @@ public class GameBoard extends JPanel implements ActionListener, MouseListener, 
             else
                y += i;
             if(doAnimation && tileArr[x][y] != null)
-               addParticles(tileArr[x][y].getParticles(x, y));
+               addVisualEffects(tileArr[x][y].getParticles(x, y));
             tileArr[x][y] = null;
          }
       }
@@ -332,11 +341,21 @@ public class GameBoard extends JPanel implements ActionListener, MouseListener, 
          smallG2d.drawRect(markedTile[0] * TILE_SIZE, markedTile[1] * TILE_SIZE, TILE_SIZE - 1, TILE_SIZE - 1);
       }
       
-      // particles
-      for(Particle p : particleList)
+      // visual effects
+      for(VisualEffect ve : visualEffectList)
       {
-         smallG2d.setColor(p.color);
-         smallG2d.fillRect((int)(TILE_SIZE * p.xLoc), (int)(TILE_SIZE * p.yLoc), PARTICLE_SIZE, PARTICLE_SIZE);
+         if(ve instanceof Particle)
+         {
+            Particle p = (Particle)ve;
+            smallG2d.setColor(p.color);
+            smallG2d.fillRect((int)(TILE_SIZE * p.xLoc), (int)(TILE_SIZE * p.yLoc), PARTICLE_SIZE, PARTICLE_SIZE);
+         }
+         if(ve instanceof FloatingString)
+         {
+            FloatingString fs = (FloatingString)ve;
+            int yOffset = (int)(fs.yOffset * TILE_SIZE);
+            drawTextWithOutline(fs.text, fs.fillColor, fs.outlineColor, yOffset, smallG2d);
+         }
       }
       
       if(SMMain.DEBUG_MODE)
@@ -356,28 +375,33 @@ public class GameBoard extends JPanel implements ActionListener, MouseListener, 
          smallG2d.fillRect(15, 0, 5, 5);
       }
       
+      // scale to actual size
       g2d.drawImage(smallImage.getScaledInstance(this.getWidth(), this.getHeight(), Image.SCALE_SMOOTH), 0, 0 , null);
       smallG2d.dispose();
    }
    
-   private void drawTextWithOutline(String text, Color fill, Color outline, int xLoc, int yLoc, Graphics2D g2d)
+   private void drawTextWithOutline(String text, Color fill, Color outline, int yOffset, Graphics2D g2d)
    {
-      Font font = g2d.getFont();
+      Font oldFont = g2d.getFont();
+      Font font = new Font(oldFont.getName(), Font.BOLD, 24);
+      g2d.setFont(font);
       GlyphVector gv = font.createGlyphVector(g2d.getFontRenderContext(), text);
       Shape textOutline = gv.getOutline();
-      // Get font metrics to help with positioning (optional, but useful for centering)
+      
       FontMetrics fm = g2d.getFontMetrics(font);
-      int x = (getWidth() - fm.stringWidth(text)) / 2; // Example: center horizontally
-      int y = (getHeight() - fm.getHeight()) / 2 + fm.getAscent(); // Example: center vertically
+      int x = ((TILES_WIDE * TILE_SIZE) - fm.stringWidth(text)) / 2;
+      int y = ((TILES_TALL * TILE_SIZE) - fm.getHeight()) / 2 + fm.getAscent() + yOffset;
       
       // Translate the shape to the desired position
-      g2d.translate(x, y);
-      g2d.setStroke(new BasicStroke(2.0f)); // Set outline thickness
-      g2d.setColor(Color.RED); // Set outline color
+      g2d.translate(x, y); // draw(shape) doesn't take x, y args, need to translate
+      g2d.setStroke(new BasicStroke(2.0f)); // outline thickness
+      g2d.setColor(outline);
       g2d.draw(textOutline);
-      g2d.setColor(Color.BLUE); // Set fill color
+      g2d.setColor(fill);
       g2d.fill(textOutline);
-      g2d.translate(-x, -y); // Translate back to original origin
+      
+      g2d.translate(-x, -y); // translate back
+      g2d.setFont(oldFont);
    }
    
    private void loadTileImages()
@@ -417,12 +441,12 @@ public class GameBoard extends JPanel implements ActionListener, MouseListener, 
             if(tileArr[x][y] != null)
                tileArr[x][y].applyGravity();
       }
-      for(int i = 0; i < particleList.size(); i++)
+      for(int i = 0; i < visualEffectList.size(); i++)
       {
-         particleList.elementAt(i).increment();
-         if(particleList.elementAt(i).isDead())
+         visualEffectList.elementAt(i).increment();
+         if(visualEffectList.elementAt(i).isDead())
          {
-            particleList.removeElementAt(i);
+            visualEffectList.removeElementAt(i);
             i--;
          }
       }

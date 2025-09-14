@@ -1,6 +1,7 @@
 package SuperMatch.Encounter;
 
 import SuperMatch.Board.*;
+import SuperMatch.GUI.*;
 import java.util.*;
 
 public class EncounterState
@@ -8,16 +9,22 @@ public class EncounterState
    private int round;
    private int combo;
    private Vector<MatchObj> matchList;
+   private GameBoard board;
    
    public int getRound(){return round;}
-   
-   public void setRound(int r){round = r;}
+   public int getCombo(){return combo;}
    
    public EncounterState()
    {
       round = -1;
       matchList = new Vector<MatchObj>();
+      board = null;
       incrementRound();
+   }
+   
+   public void setBoard(GameBoard b)
+   {
+      board = b;
    }
    
    public void incrementRound()
@@ -39,7 +46,12 @@ public class EncounterState
       combo++;
       matchList.clear();
       if(combo > 1)
+      {
          System.out.println("  Combo x" + combo);
+         FloatingString fStr = new FloatingString("x" + combo + " Combo!");
+         if(board != null)
+            board.addVisualEffect(fStr);
+      }
    }
    
    
