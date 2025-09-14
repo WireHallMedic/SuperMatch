@@ -5,6 +5,7 @@ import java.awt.event.*;
 import javax.swing.*;
 import SuperMatch.Board.*;
 import SuperMatch.Tools.*;
+import SuperMatch.Encounter.*;
 
 public class SMMain extends JFrame implements KeyListener
 {
@@ -24,6 +25,9 @@ public class SMMain extends JFrame implements KeyListener
       board = new GameBoard(null);
       add(board);
       addKeyListener(this);
+      
+      EncounterState es = new EncounterState();
+      board.setEncounterState(es);
       
       timer = new javax.swing.Timer(1000 / 30, null);
       timer.addActionListener(board);

@@ -7,12 +7,15 @@ import java.util.*;
 import java.awt.image.*;
 import SuperMatch.*;
 import SuperMatch.GUI.*;
+import SuperMatch.Encounter.*;
 
 public class GameBoard extends JPanel implements ActionListener, MouseListener, MouseMotionListener, Runnable
 {
    public static final int TILES_WIDE = 8;
    public static final int TILES_TALL = 12;
    public static final int TILE_SIZE = 32;
+   public static final int WAITING_FOR_INPUT = 0;
+   public static final int RESOLVING_TURN = 1;
    
    private static BufferedImage[] tileImageArr;
    private BoardTile[][] tileArr;
@@ -21,6 +24,12 @@ public class GameBoard extends JPanel implements ActionListener, MouseListener, 
    private int[] mouseDownLoc = {-1, -1};
    private int[] markedTile = {-1, -1};
    private Vector<Particle> particleList;
+   private EncounterState encounterState;
+   private int turnState;
+   
+   public void setEncounterState(EncounterState es){encounterState = es;}
+   
+   public EncounterState getEncounterState(){return encounterState;}
    
    public GameBoard(Bag b)
    {
@@ -32,13 +41,14 @@ public class GameBoard extends JPanel implements ActionListener, MouseListener, 
       
       bag = b;
       initializeBoardState(bag == null);
+      encounterState = null;
+      turnState = WAITING_FOR_INPUT; // must be after initializing
       addMouseListener(this);
       addMouseMotionListener(this);
       
       setBackground(Color.BLACK);
       
       setVisible(true);
-      
       
       Thread thread = new Thread(this);
       thread.start();
@@ -61,8 +71,22 @@ public class GameBoard extends JPanel implements ActionListener, MouseListener, 
    {
       while(true)
       {
-         if(hasMatches() && !hasFallingTiles())
-            removeMatches();
+         if(turnState == RESOLVING_TURN)
+         {
+            if(!hasFallingTiles())
+            {
+               if(hasMatches())
+                  removeMatches();
+               else
+               {
+                  if(encounterState != null)
+                  {
+                     encounterState.incrementRound();
+                     turnState = WAITING_FOR_INPUT;
+                  }
+               }
+            }
+         }
          Thread.yield();
       }
    }
@@ -72,6 +96,7 @@ public class GameBoard extends JPanel implements ActionListener, MouseListener, 
       BoardTile temp = tileArr[x1][y1];
       tileArr[x1][y1] = tileArr[x2][y2];
       tileArr[x2][y2] = temp;
+      turnState = RESOLVING_TURN;
    }
    
    public void doSwap(int[] a, int[] b)
