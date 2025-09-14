@@ -2,7 +2,7 @@ package SuperMatch.GUI;
 
 import java.awt.*;
 
-public class FloatingString
+public class FloatingString implements VisualEffect
 {
    public String text;
    public Color fillColor;

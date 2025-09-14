@@ -3,7 +3,7 @@ package SuperMatch.GUI;
 import java.awt.*;
 import SuperMatch.Tools.*;
 
-public class Particle
+public class Particle implements VisualEffect
 {
    public double xLoc;
    public double yLoc;
