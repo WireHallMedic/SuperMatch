@@ -509,7 +509,7 @@ public class GameBoard extends JPanel implements ActionListener, MouseListener, 
       }
       
       // mouse up adjacent to mouse down
-      if(isAdjacent(mouseDownLoc, newTile))
+      if(isAdjacent(mouseDownLoc, newTile) && turnState == WAITING_FOR_INPUT)
       {
          doSwap(mouseDownLoc, newTile);
          unmarkTile();
@@ -518,7 +518,7 @@ public class GameBoard extends JPanel implements ActionListener, MouseListener, 
       else if(matchingTiles(newTile, markedTile))
          unmarkTile();
       // clicked adjacent tile while tile is marked
-      else if(markedTile[0] != -1 && isAdjacent(markedTile, newTile))
+      else if(markedTile[0] != -1 && isAdjacent(markedTile, newTile) && turnState == WAITING_FOR_INPUT)
       {
          doSwap(markedTile, newTile);
          unmarkTile();
