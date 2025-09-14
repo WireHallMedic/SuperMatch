@@ -58,4 +58,9 @@ public class MatchObj
          dir = "Vert";
       return String.format("%s match at [%d, %d] of %d %s", dir, xLoc, yLoc, length, type.name);
    }
+   
+   public String toShortString()
+   {
+      return type.name + " " + length;
+   }
 }

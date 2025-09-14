@@ -27,7 +27,7 @@ public class Particle
       ySpeed = Math.sin(angle) * speed;
       
       age = 0;
-      maxAge = 10 + RNG.nextInt(6);
+      maxAge = 15 + RNG.nextInt(6);
    }
    
    public void increment()

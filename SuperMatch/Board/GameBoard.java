@@ -13,7 +13,8 @@ public class GameBoard extends JPanel implements ActionListener, MouseListener, 
 {
    public static final int TILES_WIDE = 8;
    public static final int TILES_TALL = 12;
-   public static final int TILE_SIZE = 32;
+   public static final int TILE_SIZE = 32;    // px, scales to actual size
+   public static final int PARTICLE_SIZE = 5; // on a tile of 32 px, scales to actual size
    public static final int WAITING_FOR_INPUT = 0;
    public static final int RESOLVING_TURN = 1;
    
@@ -76,7 +77,11 @@ public class GameBoard extends JPanel implements ActionListener, MouseListener, 
             if(!hasFallingTiles())
             {
                if(hasMatches())
+               {
+                  if(encounterState != null)
+                     encounterState.incrementCombo();
                   removeMatches();
+               }
                else
                {
                   if(encounterState != null)
@@ -120,6 +125,8 @@ public class GameBoard extends JPanel implements ActionListener, MouseListener, 
       Vector<MatchObj> matchList = getMatches();
       for(MatchObj curMatch : matchList)
       {
+         if(encounterState != null)
+            encounterState.registerMatch(curMatch);
          for(int i = 0; i < curMatch.length; i++)
          {
             int x = curMatch.xLoc;
@@ -328,7 +335,7 @@ public class GameBoard extends JPanel implements ActionListener, MouseListener, 
       for(Particle p : particleList)
       {
          smallG2d.setColor(p.color);
-         smallG2d.fillRect((int)(TILE_SIZE * p.xLoc), (int)(TILE_SIZE * p.yLoc), 4, 4);
+         smallG2d.fillRect((int)(TILE_SIZE * p.xLoc), (int)(TILE_SIZE * p.yLoc), PARTICLE_SIZE, PARTICLE_SIZE);
       }
       
       if(SMMain.DEBUG_MODE)
