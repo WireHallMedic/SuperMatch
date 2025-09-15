@@ -10,11 +10,12 @@ public class EncounterState
    private int combo;
    private Vector<MatchObj> matchList;
    private GameBoard board;
-   
    private int collateralCount;
    
    public int getRound(){return round;}
    public int getCombo(){return combo;}
+   
+   public void setCollateralCount(int cc){collateralCount = cc;}
    
    public EncounterState()
    {

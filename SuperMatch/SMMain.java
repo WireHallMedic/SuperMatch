@@ -44,7 +44,7 @@ public class SMMain extends JFrame implements KeyListener
    {
       switch(ke.getKeyCode())
       {
-         case KeyEvent.VK_SPACE :   board.setShakeDuration(10);
+         case KeyEvent.VK_SPACE :   es.setCollateralCount(10);
                                     break;
       }
    }
