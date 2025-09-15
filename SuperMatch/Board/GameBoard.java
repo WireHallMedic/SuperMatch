@@ -17,6 +17,7 @@ public class GameBoard extends JPanel implements ActionListener, MouseListener, 
    public static final int TILES_TALL = 12;
    public static final int TILE_SIZE = 32;    // px, scales to actual size
    public static final int PARTICLE_SIZE = 5; // on a tile of 32 px, scales to actual size
+   public static final int EXPLOSION_SHAKE_DURATION = 10;
    public static final int WAITING_FOR_INPUT = 0;
    public static final int RESOLVING_TURN = 1;
    
@@ -30,8 +31,10 @@ public class GameBoard extends JPanel implements ActionListener, MouseListener, 
    private Vector<VisualEffect> visualEffectList;
    private EncounterState encounterState;
    private int turnState;
+   private int shakeDuration;
    
    public void setEncounterState(EncounterState es){encounterState = es;}
+   public void setShakeDuration(int dur){shakeDuration = dur;}
    
    public EncounterState getEncounterState(){return encounterState;}
    
@@ -48,6 +51,7 @@ public class GameBoard extends JPanel implements ActionListener, MouseListener, 
       initializeBoardState(bag == null, removeInitialMatches);
       encounterState = null;
       turnState = WAITING_FOR_INPUT; // must be after initializing
+      shakeDuration = 0;
       addMouseListener(this);
       addMouseMotionListener(this);
       
@@ -181,6 +185,7 @@ public class GameBoard extends JPanel implements ActionListener, MouseListener, 
       }
       FloatingString fStr = new FloatingString("Collateral Damaage!");
       addVisualEffect(fStr);
+      shakeDuration = EXPLOSION_SHAKE_DURATION;
    }
    
    // bubble sort out nulls for readability; KISS
@@ -405,7 +410,14 @@ public class GameBoard extends JPanel implements ActionListener, MouseListener, 
       }
       
       // scale to actual size
-      g2d.drawImage(smallImage.getScaledInstance(this.getWidth(), this.getHeight(), Image.SCALE_SMOOTH), 0, 0 , null);
+      int shakeX = 0;
+      int shakeY = 0;
+      if(shakeDuration > 0)
+      {
+         shakeX = 2 - RNG.nextInt(6);
+         shakeY = 2 - RNG.nextInt(6);
+      }
+      g2d.drawImage(smallImage.getScaledInstance(this.getWidth(), this.getHeight(), Image.SCALE_SMOOTH), shakeX, shakeY, null);
       smallG2d.dispose();
    }
    
@@ -479,6 +491,8 @@ public class GameBoard extends JPanel implements ActionListener, MouseListener, 
             i--;
          }
       }
+      if(shakeDuration > 0)
+         shakeDuration--;
       repaint();
    }
    

@@ -42,12 +42,11 @@ public class SMMain extends JFrame implements KeyListener
    public void keyTyped(KeyEvent ke){}
    public void keyPressed(KeyEvent ke)
    {
-//       switch(ke.getKeyCode())
-//       {
-//          case KeyEvent.VK_SPACE : board.addCollateralDamage(10); 
-//             System.out.println("Collateral Damage invoked");
-//             break;
-//       }
+      switch(ke.getKeyCode())
+      {
+         case KeyEvent.VK_SPACE :   board.setShakeDuration(10);
+                                    break;
+      }
    }
    
    public static void main(String[] args)
