@@ -44,12 +44,6 @@ public class EncounterState
       if(mo.type == TileType.COLLATERAL)
       {
          collateralCount += mo.getValue() * combo;
-         if(collateralCount >= 6)
-         {
-            if(board != null)
-               board.addCollateralDamage(collateralCount / 2);
-            collateralCount = 0;
-         }
       }
    }
    
@@ -66,5 +60,15 @@ public class EncounterState
       }
    }
    
+   public boolean shouldExplode()
+   {
+      return collateralCount >= 6;
+   }
    
+   public int popExplosionCount()
+   {
+      int explosions = collateralCount / 2;
+      collateralCount = 0;
+      return explosions;
+   }
 }

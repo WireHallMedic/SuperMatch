@@ -6,7 +6,7 @@ import SuperMatch.Tools.*;
 public class Bag
 {
    private Vector<TileType> list;
-   private static final int SETS_PER_WILD = 10;
+   private static final int SETS_PER_WILD = 8;
    
    public Bag()
    {

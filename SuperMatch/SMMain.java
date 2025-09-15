@@ -12,6 +12,7 @@ public class SMMain extends JFrame implements KeyListener
    public static final boolean DEBUG_MODE = true;
    
    private GameBoard board;
+   private EncounterState es;
    private javax.swing.Timer timer;
    
    public SMMain()
@@ -26,7 +27,7 @@ public class SMMain extends JFrame implements KeyListener
       add(board);
       addKeyListener(this);
       
-      EncounterState es = new EncounterState();
+      es = new EncounterState();
       board.setEncounterState(es);
       es.setBoard(board);
       
@@ -41,13 +42,12 @@ public class SMMain extends JFrame implements KeyListener
    public void keyTyped(KeyEvent ke){}
    public void keyPressed(KeyEvent ke)
    {
-      switch(ke.getKeyCode())
-      {
-         case KeyEvent.VK_SPACE : board.addCollateralDamage(4); 
-            System.out.println("Collateral Damage invoked");
-            break;
-      }
-      repaint();
+//       switch(ke.getKeyCode())
+//       {
+//          case KeyEvent.VK_SPACE : board.addCollateralDamage(10); 
+//             System.out.println("Collateral Damage invoked");
+//             break;
+//       }
    }
    
    public static void main(String[] args)

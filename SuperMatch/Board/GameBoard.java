@@ -21,6 +21,7 @@ public class GameBoard extends JPanel implements ActionListener, MouseListener, 
    public static final int RESOLVING_TURN = 1;
    
    private static BufferedImage[] tileImageArr;
+   private static BufferedImage[] explosionImageArr;
    private BoardTile[][] tileArr;
    private Bag bag;
    private int[] mouseLoc = {-1, -1};
@@ -29,10 +30,8 @@ public class GameBoard extends JPanel implements ActionListener, MouseListener, 
    private Vector<VisualEffect> visualEffectList;
    private EncounterState encounterState;
    private int turnState;
-   private int pendingCollateralDamage;
    
    public void setEncounterState(EncounterState es){encounterState = es;}
-   public void addCollateralDamage(int cd){pendingCollateralDamage += cd;}
    
    public EncounterState getEncounterState(){return encounterState;}
    
@@ -41,13 +40,13 @@ public class GameBoard extends JPanel implements ActionListener, MouseListener, 
       super();
       
       tileImageArr = FileManager.loadTileImages();
+      explosionImageArr = FileManager.loadExplosionImages();
       tileArr = new BoardTile[TILES_WIDE][TILES_TALL];
       visualEffectList = new Vector<VisualEffect>();
       
       bag = b;
       initializeBoardState(bag == null, removeInitialMatches);
       encounterState = null;
-      pendingCollateralDamage = 0;
       turnState = WAITING_FOR_INPUT; // must be after initializing
       addMouseListener(this);
       addMouseMotionListener(this);
@@ -91,9 +90,9 @@ public class GameBoard extends JPanel implements ActionListener, MouseListener, 
                      encounterState.incrementCombo();
                   removeMatches();
                }
-               else if(pendingCollateralDamage > 0)
+               else if(encounterState != null && encounterState.shouldExplode())
                {
-                  resolveCollateralDamage();
+                  resolveCollateralDamage(encounterState.popExplosionCount());
                   doGravity(true);
                   fillGaps(true);
                }
@@ -165,9 +164,9 @@ public class GameBoard extends JPanel implements ActionListener, MouseListener, 
    }
    public void removeMatches(){removeMatches(true);}
    
-   public void resolveCollateralDamage()
+   public void resolveCollateralDamage(int count)
    {
-      for(int i = 0; i < pendingCollateralDamage; i++)
+      for(int i = 0; i < count; i++)
       {
          int x = RNG.nextInt(TILES_WIDE);
          int y = RNG.nextInt(TILES_TALL);
@@ -177,11 +176,11 @@ public class GameBoard extends JPanel implements ActionListener, MouseListener, 
             y = RNG.nextInt(TILES_TALL);
          }
          addVisualEffects(tileArr[x][y].getParticles(x, y));
+         addVisualEffect(new Explosion(x, y));
          tileArr[x][y] = null;
       }
       FloatingString fStr = new FloatingString("Collateral Damaage!");
       addVisualEffect(fStr);
-      pendingCollateralDamage = 0;
    }
    
    // bubble sort out nulls for readability; KISS
@@ -380,7 +379,14 @@ public class GameBoard extends JPanel implements ActionListener, MouseListener, 
             smallG2d.setColor(p.color);
             smallG2d.fillRect((int)(TILE_SIZE * p.xLoc), (int)(TILE_SIZE * p.yLoc), PARTICLE_SIZE, PARTICLE_SIZE);
          }
-         if(ve instanceof FloatingString)
+         else if(ve instanceof Explosion)
+         {
+            Explosion ex = (Explosion)ve;
+            int x = (int)(ex.xLoc * TILE_SIZE);
+            int y = (int)(ex.yLoc * TILE_SIZE);
+            smallG2d.drawImage(explosionImageArr[ex.getImageIndex()], null, x, y);
+         }
+         else if(ve instanceof FloatingString)
          {
             FloatingString fs = (FloatingString)ve;
             int yOffset = (int)(fs.yOffset * TILE_SIZE);

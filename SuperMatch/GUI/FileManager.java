@@ -56,4 +56,16 @@ public class FileManager
          imageArr[i] = imageStrip.getSubimage(0, i * TILE_SIZE, TILE_SIZE, TILE_SIZE);
       return imageArr;
    }
+   
+   public static BufferedImage[] loadExplosionImages()
+   {
+      BufferedImage[] imageArr = new BufferedImage[4];
+      BufferedImage imageStrip = FileManager.loadImageFile("/SuperMatch/Resources/Explosion.png");
+      
+      for(int i = 0; i < imageArr.length; i++)
+      {
+         imageArr[i] = imageStrip.getSubimage(0, i * TILE_SIZE * 2, TILE_SIZE * 2, TILE_SIZE * 2);
+      }
+      return imageArr;
+   }
 }
