@@ -117,6 +117,24 @@ public class GameBoard extends JPanel implements ActionListener, MouseListener, 
       }
    }
    
+   public void attemptSwap(int x1, int y1, int x2, int y2)
+   {
+      if(isLegalMove(x1, y1, x2, y2))
+      {
+         doSwap(x1, y1, x2, y2);
+      }
+      else
+      {
+         FloatingString fStr = new FloatingString("Not a Legal Move");
+         addVisualEffect(fStr);
+      }
+   }
+   
+   public void attemptSwap(int[] a, int[] b)
+   {
+      attemptSwap(a[0], a[1], b[0], b[1]);
+   }
+   
    public void doSwap(int x1, int y1, int x2, int y2)
    {
       BoardTile temp = tileArr[x1][y1];
@@ -532,9 +550,10 @@ public class GameBoard extends JPanel implements ActionListener, MouseListener, 
       }
       
       // mouse up adjacent to mouse down
-      if(isAdjacent(mouseDownLoc, newTile) && turnState == WAITING_FOR_INPUT)
+      if(isAdjacent(mouseDownLoc, newTile) && 
+         turnState == WAITING_FOR_INPUT)
       {
-         doSwap(mouseDownLoc, newTile);
+         attemptSwap(mouseDownLoc, newTile);
          unmarkTile();
       }
       // clicked marked tile
@@ -543,7 +562,7 @@ public class GameBoard extends JPanel implements ActionListener, MouseListener, 
       // clicked adjacent tile while tile is marked
       else if(markedTile[0] != -1 && isAdjacent(markedTile, newTile) && turnState == WAITING_FOR_INPUT)
       {
-         doSwap(markedTile, newTile);
+         attemptSwap(markedTile, newTile);
          unmarkTile();
       }
       // clicked non-adjacent tile
@@ -566,5 +585,12 @@ public class GameBoard extends JPanel implements ActionListener, MouseListener, 
    public boolean matchingTiles(int[] a, int[] b)
    {
       return a[0] == b[0] && a[1] == b[1];
+   }
+   
+   public boolean isLegalMove(int x1, int y1, int x2, int y2)
+   {
+      TestGameBoard tgm = new TestGameBoard(this);
+      tgm.doSwap(x1, y1, x2, y2);
+      return tgm.hasMatches();
    }
 }
