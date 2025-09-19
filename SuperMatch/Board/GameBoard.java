@@ -21,17 +21,17 @@ public class GameBoard extends JPanel implements ActionListener, MouseListener, 
    public static final int WAITING_FOR_INPUT = 0;
    public static final int RESOLVING_TURN = 1;
    
-   private static BufferedImage[] tileImageArr;
-   private static BufferedImage[] explosionImageArr;
-   private BoardTile[][] tileArr;
-   private Bag bag;
-   private int[] mouseLoc = {-1, -1};
-   private int[] mouseDownLoc = {-1, -1};
-   private int[] markedTile = {-1, -1};
-   private Vector<VisualEffect> visualEffectList;
-   private EncounterState encounterState;
-   private int turnState;
-   private int shakeDuration;
+   protected static BufferedImage[] tileImageArr;
+   protected static BufferedImage[] explosionImageArr;
+   protected BoardTile[][] tileArr;
+   protected Bag bag;
+   protected int[] mouseLoc = {-1, -1};
+   protected int[] mouseDownLoc = {-1, -1};
+   protected int[] markedTile = {-1, -1};
+   protected Vector<VisualEffect> visualEffectList;
+   protected EncounterState encounterState;
+   protected int turnState;
+   protected int shakeDuration;
    
    public void setEncounterState(EncounterState es){encounterState = es;}
    public void setShakeDuration(int dur){shakeDuration = dur;}
@@ -59,8 +59,11 @@ public class GameBoard extends JPanel implements ActionListener, MouseListener, 
       
       setVisible(true);
       
-      Thread thread = new Thread(this);
-      thread.start();
+      if(this instanceof GameBoard)
+      {
+         Thread thread = new Thread(this);
+         thread.start();
+      }
    }
    
    public GameBoard(Bag b){this(b, true);}
