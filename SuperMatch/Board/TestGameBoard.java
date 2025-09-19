@@ -16,8 +16,11 @@ public class TestGameBoard extends GameBoard
    public TestGameBoard(GameBoard initialState)
    {
       super(null, false);
+      removeMouseListener(this);
+      removeMouseMotionListener(this);
+      
       for(int x = 0; x < TILES_WIDE; x++)
       for(int y = 0; y < TILES_TALL; y++)
-         tileArr[x][y] = initialState.tileArr[x][y];
+         tileArr[x][y] = new BoardTile(initialState.tileArr[x][y].getType());
    }
 }

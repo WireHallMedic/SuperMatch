@@ -593,4 +593,21 @@ public class GameBoard extends JPanel implements ActionListener, MouseListener, 
       tgm.doSwap(x1, y1, x2, y2);
       return tgm.hasMatches();
    }
+   
+   public boolean hasLegalMove()
+   {
+      for(int x = 0; x < TILES_WIDE; x++)
+      for(int y = 0; y < TILES_TALL - 1; y++)
+      {
+         if(isLegalMove(x, y, x, y + 1))
+            return true;
+      }
+      for(int x = 0; x < TILES_WIDE - 1; x++)
+      for(int y = 0; y < TILES_TALL; y++)
+      {
+         if(isLegalMove(x, y, x + 1, y))
+            return true;
+      }
+      return false;
+   }
 }
