@@ -52,7 +52,8 @@ a0	b68	c255	f%\011SuperMatch.jar	g%\011SuperMatch.zip	hManifest-Version\0111.0\0
 %\011SuperMatch%sSMMain.java
 %\011SuperMatch%sTools%sRNG.java
 %\011SuperMatch%sTools%sStatefulRNG.java
-!43;l
+!88;l
 %\011SuperMatch%sBoard%sGameBoardTest.java
+%\011SuperMatch%sTools%sStatefulRNGTest.java
 !169;t
 jgrJUnit0xr	%\011SuperMatch%sBoard%sGameBoard.java	1757609693937:P%\011GameBoardTest.java	%\011SuperMatch%sBoard%sGameBoardTest.java	1757609693937:P%\011GameBoard.java	

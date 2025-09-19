@@ -1,12 +1,10 @@
 package SuperMatch.Tools;
 
-import java.util.*;
-
 public class RNG
 {
-   private static java.util.Random random = new java.util.Random(System.currentTimeMillis());
+   private static StatefulRNG random = new StatefulRNG((int)System.currentTimeMillis());
    
-   public static void setSeed(long s){random.setSeed(s);}
+   public static void setSeed(long s){random.setSeed((int)s);}
    
    public static double nextDouble(){return random.nextDouble();}
    public static boolean nextBoolean(){return random.nextBoolean();}
@@ -15,6 +13,10 @@ public class RNG
    {
       if(bound == 0)
          return 0;
-      return random.nextInt(bound);
+      return (int)(random.nextDouble() * bound);
    }
+   
+   public static int getPosition(){return random.getIndex();}
+   
+   public static void setPosition(int pos){random.setIndex(pos);}
 }
