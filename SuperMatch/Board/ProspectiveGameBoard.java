@@ -11,9 +11,9 @@ import SuperMatch.GUI.*;
 import SuperMatch.Tools.*;
 import SuperMatch.Encounter.*;
 
-public class TestGameBoard extends GameBoard
+public class ProspectiveGameBoard extends GameBoard
 {
-   public TestGameBoard(GameBoard initialState)
+   public ProspectiveGameBoard(GameBoard initialState)
    {
       super(null, false);
       removeMouseListener(this);
