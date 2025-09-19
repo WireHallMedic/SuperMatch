@@ -5,6 +5,7 @@ public class RNG
    private static StatefulRNG random = new StatefulRNG((int)System.currentTimeMillis());
    
    public static void setSeed(long s){random.setSeed((int)s);}
+   public static void setSeed(int s){random.setSeed(s);}
    
    public static double nextDouble(){return random.nextDouble();}
    public static boolean nextBoolean(){return random.nextBoolean();}
