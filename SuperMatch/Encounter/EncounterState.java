@@ -11,6 +11,8 @@ public class EncounterState
    private Vector<MatchObj> matchList;
    private GameBoard board;
    private int collateralCount;
+   private boolean playersTurn;
+   private boolean extraTurn;
    
    public int getRound(){return round;}
    public int getCombo(){return combo;}
@@ -22,6 +24,7 @@ public class EncounterState
       round = -1;
       matchList = new Vector<MatchObj>();
       board = null;
+      playersTurn = false;
       incrementRound();
    }
    
@@ -33,14 +36,24 @@ public class EncounterState
    public void incrementRound()
    {
       round++;
-      System.out.println("Round " + round);
       combo = 0;
+      if(!extraTurn)
+         playersTurn = !playersTurn;
+      extraTurn = false;
       matchList.clear();
+      String str = "Round " + round + " ";
+      if(playersTurn)
+         str += "[P]";
+      else
+         str += "[E]";
+      System.out.println(str);
    }
    
    public void registerMatch(MatchObj mo)
    {
       matchList.add(mo);
+      if(mo.length > 3)
+         extraTurn = true;
       System.out.println("  " + mo.type.name + " +" + (combo * mo.getValue()));
       if(mo.type == TileType.COLLATERAL)
       {

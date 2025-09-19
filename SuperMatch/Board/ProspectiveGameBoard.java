@@ -29,14 +29,16 @@ public class ProspectiveGameBoard extends GameBoard
       MatchResults results = new MatchResults(x1, y1, x2, y2);
       int combo = 1;
       doSwap(x1, y1, x2, y2);
-//       while(hasMatches())
-//       {
+      int rngPosition = RNG.getPosition();
+      while(hasMatches())
+      {
          Vector<MatchObj> matchList = getMatches();
          for(MatchObj curMatch : matchList)
             results.add(curMatch, combo);
          removeMatches(false);
-//          combo++;
-//       }
+         combo++;
+      }
+      RNG.setPosition(rngPosition);
       return results;
    }
 }
