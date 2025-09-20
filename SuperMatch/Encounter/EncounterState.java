@@ -52,8 +52,13 @@ public class EncounterState
    public void registerMatch(MatchObj mo)
    {
       matchList.add(mo);
-      if(mo.length > 3)
+      if(mo.length > 3 && !extraTurn)
+      {
          extraTurn = true;
+         FloatingString fStr = new FloatingString("Extra Turn!");
+         if(board != null)
+            board.addVisualEffect(fStr);
+      }
       System.out.println("  " + mo.type.name + " +" + (combo * mo.getValue()));
       if(mo.type == TileType.COLLATERAL)
       {
