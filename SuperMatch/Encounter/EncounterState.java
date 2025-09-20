@@ -1,5 +1,6 @@
 package SuperMatch.Encounter;
 
+import SuperMatch.Actor.*;
 import SuperMatch.Board.*;
 import SuperMatch.GUI.*;
 import java.util.*;
@@ -41,6 +42,17 @@ public class EncounterState
       board = b;
    }
    
+   public void startTurn()
+   {
+      // enemy takes turn
+      if(!playersTurn)
+      {
+         MatchResults move = board.getBestMove();
+         board.doSwap(move.x1, move.y1, move.x2, move.y2);
+         board.setTurnState(GameBoard.RESOLVING_TURN);
+      }
+   }
+   
    public void incrementRound()
    {
       round++;
@@ -55,6 +67,7 @@ public class EncounterState
       else
          str += "[E]";
       System.out.println(str);
+      startTurn();
    }
    
    public void registerMatch(MatchObj mo)

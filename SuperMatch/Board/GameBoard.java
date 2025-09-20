@@ -33,6 +33,7 @@ public class GameBoard extends JPanel implements ActionListener, MouseListener, 
    protected int turnState;
    protected int shakeDuration;
    
+   public void setTurnState(int state){turnState = state;}
    public void setEncounterState(EncounterState es){encounterState = es;}
    public void setShakeDuration(int dur){shakeDuration = dur;}
    
@@ -107,8 +108,8 @@ public class GameBoard extends JPanel implements ActionListener, MouseListener, 
                {
                   if(encounterState != null)
                   {
-                     encounterState.incrementRound();
                      turnState = WAITING_FOR_INPUT;
+                     encounterState.incrementRound();
                   }
                }
             }
@@ -291,7 +292,7 @@ public class GameBoard extends JPanel implements ActionListener, MouseListener, 
             else
             {
                // match starts
-               if(a.matches(b))
+               if(a != null && b != null && a.matches(b))
                {
                   curMatch = new MatchObj(x, y, true);
                   curMatch.setType(a, b);
@@ -339,7 +340,7 @@ public class GameBoard extends JPanel implements ActionListener, MouseListener, 
             else
             {
                // match starts
-               if(a.matches(b))
+               if(a != null && b != null && a.matches(b))
                {
                   curMatch = new MatchObj(x, y, false);
                   curMatch.setType(a, b);
@@ -589,25 +590,81 @@ public class GameBoard extends JPanel implements ActionListener, MouseListener, 
    
    public boolean isLegalMove(int x1, int y1, int x2, int y2)
    {
-      ProspectiveGameBoard pgm = new ProspectiveGameBoard(this);
+      return isLegalMove(x1, y1, x2, y2, new ProspectiveGameBoard(this)); 
+   }
+   
+   // puts the board back so we can generate fewer boards
+   public boolean isLegalMove(int x1, int y1, int x2, int y2, ProspectiveGameBoard pgm)
+   {
       pgm.doSwap(x1, y1, x2, y2);
-      return pgm.hasMatches();
+      boolean result = pgm.hasMatches();
+      pgm.doSwap(x1, y1, x2, y2);
+      return result;
    }
    
    public boolean hasLegalMove()
    {
+      ProspectiveGameBoard pgm = new ProspectiveGameBoard(this);
       for(int x = 0; x < TILES_WIDE; x++)
       for(int y = 0; y < TILES_TALL - 1; y++)
       {
-         if(isLegalMove(x, y, x, y + 1))
+         if(isLegalMove(x, y, x, y + 1, pgm))
             return true;
       }
       for(int x = 0; x < TILES_WIDE - 1; x++)
       for(int y = 0; y < TILES_TALL; y++)
       {
-         if(isLegalMove(x, y, x + 1, y))
+         if(isLegalMove(x, y, x + 1, y, pgm))
             return true;
       }
       return false;
+   }
+   
+   public MatchResults getMoveResult(int x1, int y1, int x2, int y2, ProspectiveGameBoard pgm)
+   {
+      MatchResults results = null;
+      if(isLegalMove(x1, y1, x2, y2, pgm))
+      {
+         pgm = new ProspectiveGameBoard(this);
+         results = pgm.getMoveResults(x1, y1, x2, y2);
+      }
+      return results;
+   }
+   
+   public MatchResults getMoveResult(int x1, int y1, int x2, int y2)
+   {
+      return getMoveResult(x1, y1, x2, y2, new ProspectiveGameBoard(this));
+   }
+   
+   public MatchResults getBestMove()
+   {
+      MatchResults bestSoFar = null;
+      MatchResults curResults = null;
+      ProspectiveGameBoard legalMoveBoard = new ProspectiveGameBoard(this);
+      for(int x = 0; x < TILES_WIDE - 1; x++)
+      for(int y = 0; y < TILES_TALL; y++)
+      {
+         curResults = getMoveResult(x, y, x + 1, y, legalMoveBoard);
+         if(curResults != null)
+         {
+            if(bestSoFar == null)
+               bestSoFar = curResults;
+            else
+               bestSoFar = bestSoFar.compare(curResults);
+         }
+      }
+      for(int x = 0; x < TILES_WIDE; x++)
+      for(int y = 0; y < TILES_TALL - 1; y++)
+      {
+         curResults = getMoveResult(x, y, x, y + 1);
+         if(curResults != null)
+         {
+            if(bestSoFar == null)
+               bestSoFar = curResults;
+            else
+               bestSoFar = bestSoFar.compare(curResults);
+         }
+      }
+      return bestSoFar;
    }
 }
