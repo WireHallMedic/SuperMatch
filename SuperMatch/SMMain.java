@@ -3,6 +3,7 @@ package SuperMatch;
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
+import SuperMatch.GUI.*;
 import SuperMatch.Board.*;
 import SuperMatch.Tools.*;
 import SuperMatch.Encounter.*;
@@ -12,19 +13,22 @@ public class SMMain extends JFrame implements KeyListener
    public static final boolean DEBUG_MODE = true;
    
    private GameBoard board;
+   private MainGamePanel mainGamePanel;
    private EncounterState es;
    private javax.swing.Timer timer;
    
    public SMMain()
    {
       super();
-      setSize(400, 600);
+      setSize(1200, 600);
       setDefaultCloseOperation(EXIT_ON_CLOSE);
       setLayout(new GridLayout(1, 1));
       setTitle("SuperMatch");
       
-      board = new GameBoard(null);
-      add(board);
+      mainGamePanel = new MainGamePanel();
+      add(mainGamePanel);
+      
+      board = mainGamePanel.getGameBoard();
       addKeyListener(this);
       
       es = new EncounterState();

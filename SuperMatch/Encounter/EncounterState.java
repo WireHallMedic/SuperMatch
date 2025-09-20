@@ -13,11 +13,17 @@ public class EncounterState
    private int collateralCount;
    private boolean playersTurn;
    private boolean extraTurn;
+   private Actor player;
+   private Actor enemy;
    
    public int getRound(){return round;}
    public int getCombo(){return combo;}
+   public Actor getPlayer(){return player;}
+   public Actor getEnemy(){return enemy;}
    
    public void setCollateralCount(int cc){collateralCount = cc;}
+   public void setPlayer(Actor p){player = p;}
+   public void setEnemy(Actor e){enemy = e;}
    
    public EncounterState()
    {
@@ -25,6 +31,8 @@ public class EncounterState
       matchList = new Vector<MatchObj>();
       board = null;
       playersTurn = false;
+      player = null;
+      enemy = null;
       incrementRound();
    }
    
